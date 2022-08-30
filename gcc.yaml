@@ -1,0 +1,81 @@
+package:
+  name: gcc
+  version: 12.2.0
+  epoch: 2
+  description: "the GNU compiler collection (cross compilation)"
+  target-architecture:
+    - all
+  copyright:
+    - paths:
+      - "*"
+      attestation: TODO
+      license: GPL-3.0-or-later
+  dependencies:
+    runtime:
+      - binutils
+
+environment:
+  contents:
+    repositories:
+      - https://packages.wolfi.dev/bootstrap/stage2
+    keyring:
+      - https://packages.wolfi.dev/bootstrap/stage2/melange.rsa.pub
+    packages:
+      - wolfi-baselayout
+      - busybox
+      - build-base
+      - ca-certificates-bundle
+      - texinfo
+      - gawk
+      - bison
+      - flex
+      - gmp
+      - mpfr
+      - mpc
+      - isl
+      - zlib
+      - make
+
+pipeline:
+  - uses: fetch
+    with:
+      uri: https://ftp.gnu.org/gnu/gcc/gcc-${{package.version}}/gcc-${{package.version}}.tar.gz
+      expected-sha256: ac6b317eb4d25444d87cf29c0d141dedc1323a1833ec9995211b13e1a851261c
+  - name: 'Set up build directory'
+    runs: |
+      mkdir build
+  - name: 'Configure GCC'
+    runs: |
+      cd build
+      ../configure \
+        --build=$(uname -m)-pc-linux-gnu \
+        --host=$(uname -m)-pc-linux-gnu \
+        --target=$(uname -m)-pc-linux-gnu \
+        --prefix=/usr \
+        --disable-nls \
+        --disable-werror \
+        --with-glibc-version=2.35 \
+        --enable-initfini-array \
+        --disable-nls \
+        --disable-shared \
+        --disable-multilib \
+        --disable-libcc1 \
+        --disable-decimal-float \
+        --disable-threads \
+        --disable-libatomic \
+        --disable-libgomp \
+        --disable-libquadmath \
+        --disable-libssp \
+        --disable-libvtv \
+        --disable-libstdcxx \
+        --enable-languages=c,c++
+  - runs: |
+      make -C build -j$(nproc)
+  - runs: |
+      make -C build -j$(nproc) install DESTDIR="${{targets.destdir}}"
+  - runs: |
+      ln -s gcc ${{targets.destdir}}/usr/bin/cc
+  - name: 'Clean up documentation'
+    runs: |
+      rm -rf ${{targets.destdir}}/usr/share/info
+  - uses: strip
