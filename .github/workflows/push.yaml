@@ -55,6 +55,10 @@ jobs:
           empty-workspace: false
           source-dir: ${{ github.workspace }}/bzip2
 
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: perl
+
       - id: auth
         name: 'Authenticate to Google Cloud'
         uses: google-github-actions/auth@v0
