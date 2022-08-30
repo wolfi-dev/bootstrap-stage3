@@ -67,6 +67,10 @@ jobs:
         with:
           package-name: texinfo
 
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: gmp
+
       - id: auth
         name: 'Authenticate to Google Cloud'
         uses: google-github-actions/auth@v0
