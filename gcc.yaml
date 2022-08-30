@@ -1,7 +1,7 @@
 package:
   name: gcc
   version: 12.2.0
-  epoch: 2
+  epoch: 3
   description: "the GNU compiler collection (cross compilation)"
   target-architecture:
     - all
@@ -78,3 +78,15 @@ pipeline:
     runs: |
       rm -rf ${{targets.destdir}}/usr/share/info
   - uses: strip
+
+subpackages:
+  - name: 'libstdc++'
+    pipeline:
+      - runs: |
+          mkdir -p "${{targets.subpkgdir}}"/usr/lib64
+          mkdir -p "${{targets.subpkgdir}}"/usr/include
+          mkdir -p "${{targets.subpkgdir}}"/usr/share/gcc-${{package.version}}/python/libstdcxx
+          mv "${{targets.destdir}}"/usr/lib64/*++* "${{targets.subpkgdir}}"/usr/lib64/
+          mv "${{targets.destdir}}"/usr/include/*++* "${{targets.subpkgdir}}"/usr/include/
+          mv "${{targets.destdir}}"/usr/share/gcc-${{package.version}}/python/libstdcxx/* \
+            "${{targets.subpkgdir}}"/usr/share/gcc-${{package.version}}/python/libstdcxx/
