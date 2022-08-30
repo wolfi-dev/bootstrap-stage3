@@ -20,6 +20,7 @@ MPFR_VERSION ?= 4.1.0-r2
 MPC_VERSION ?= 1.2.1-r1
 GCC_VERSION ?= 12.2.0-r3
 GMAKE_VERSION ?= 4.3-r1
+PKGCONF_VERSION ?= 1.9.3-r1
 
 MELANGE_OPTS ?= \
 	--repository-append ${REPO} \
@@ -46,7 +47,8 @@ PACKAGES = \
 	packages/${ARCH}/mpfr-${MPFR_VERSION}.apk \
 	packages/${ARCH}/mpc-${MPC_VERSION}.apk \
 	packages/${ARCH}/gcc-${GCC_VERSION}.apk \
-	packages/${ARCH}/make-${GMAKE_VERSION}.apk
+	packages/${ARCH}/make-${GMAKE_VERSION}.apk \
+	packages/${ARCH}/pkgconf-${PKGCONF_VERSION}.apk
 
 all: ${KEY} ${PACKAGES}
 
@@ -127,6 +129,11 @@ packages/${ARCH}/gcc-${GCC_VERSION}.apk:
 
 packages/${ARCH}/make-${GMAKE_VERSION}.apk:
 	${MELANGE} build make.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
+	apk index -o packages/${ARCH}/APKINDEX.tar.gz packages/${ARCH}/*.apk --allow-untrusted
+	melange sign-index --signing-key ${KEY} packages/${ARCH}/APKINDEX.tar.gz
+
+packages/${ARCH}/pkgconf-${PKGCONF_VERSION}.apk:
+	${MELANGE} build pkgconf.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
 	apk index -o packages/${ARCH}/APKINDEX.tar.gz packages/${ARCH}/*.apk --allow-untrusted
 	melange sign-index --signing-key ${KEY} packages/${ARCH}/APKINDEX.tar.gz
 
