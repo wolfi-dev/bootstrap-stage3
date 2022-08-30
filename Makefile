@@ -18,7 +18,8 @@ BINUTILS_VERSION ?= 2.39-r1
 GAWK_VERSION ?= 5.1.1-r1
 MPFR_VERSION ?= 4.1.0-r2
 MPC_VERSION ?= 1.2.1-r1
-GCC_VERSION ?= 12.2.0-r2
+GCC_VERSION ?= 12.2.0-r3
+GMAKE_VERSION ?= 4.3-r1
 
 MELANGE_OPTS ?= \
 	--repository-append ${REPO} \
@@ -44,7 +45,8 @@ PACKAGES = \
 	packages/${ARCH}/gawk-${GAWK_VERSION}.apk \
 	packages/${ARCH}/mpfr-${MPFR_VERSION}.apk \
 	packages/${ARCH}/mpc-${MPC_VERSION}.apk \
-	packages/${ARCH}/gcc-${GCC_VERSION}.apk
+	packages/${ARCH}/gcc-${GCC_VERSION}.apk \
+	packages/${ARCH}/make-${GMAKE_VERSION}.apk
 
 all: ${KEY} ${PACKAGES}
 
@@ -120,6 +122,11 @@ packages/${ARCH}/mpc-${MPC_VERSION}.apk:
 
 packages/${ARCH}/gcc-${GCC_VERSION}.apk:
 	${MELANGE} build gcc.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
+	apk index -o packages/${ARCH}/APKINDEX.tar.gz packages/${ARCH}/*.apk --allow-untrusted
+	melange sign-index --signing-key ${KEY} packages/${ARCH}/APKINDEX.tar.gz
+
+packages/${ARCH}/make-${GMAKE_VERSION}.apk:
+	${MELANGE} build make.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
 	apk index -o packages/${ARCH}/APKINDEX.tar.gz packages/${ARCH}/*.apk --allow-untrusted
 	melange sign-index --signing-key ${KEY} packages/${ARCH}/APKINDEX.tar.gz
 
