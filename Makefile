@@ -15,6 +15,7 @@ TEXINFO_VERSION ?= 6.8-r0
 GMP_VERSION ?= 6.2.1-r2
 ISL_VERSION ?= 0.24-r1
 BINUTILS_VERSION ?= 2.39-r1
+GAWK_VERSION ?= 5.1.1-r1
 
 MELANGE_OPTS ?= \
 	--repository-append ${REPO} \
@@ -36,7 +37,8 @@ PACKAGES = \
 	packages/${ARCH}/texinfo-${TEXINFO_VERSION}.apk \
 	packages/${ARCH}/gmp-${GMP_VERSION}.apk \
 	packages/${ARCH}/isl-${ISL_VERSION}.apk \
-	packages/${ARCH}/binutils-${BINUTILS_VERSION}.apk
+	packages/${ARCH}/binutils-${BINUTILS_VERSION}.apk \
+	packages/${ARCH}/gawk-${GAWK_VERSION}.apk
 
 all: ${KEY} ${PACKAGES}
 
@@ -92,6 +94,11 @@ packages/${ARCH}/isl-${ISL_VERSION}.apk:
 
 packages/${ARCH}/binutils-${BINUTILS_VERSION}.apk:
 	${MELANGE} build binutils.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
+	apk index -o packages/${ARCH}/APKINDEX.tar.gz packages/${ARCH}/*.apk --allow-untrusted
+	melange sign-index --signing-key ${KEY} packages/${ARCH}/APKINDEX.tar.gz
+
+packages/${ARCH}/gawk-${GAWK_VERSION}.apk:
+	${MELANGE} build gawk.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
 	apk index -o packages/${ARCH}/APKINDEX.tar.gz packages/${ARCH}/*.apk --allow-untrusted
 	melange sign-index --signing-key ${KEY} packages/${ARCH}/APKINDEX.tar.gz
 
