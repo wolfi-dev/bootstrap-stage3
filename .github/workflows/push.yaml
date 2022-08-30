@@ -45,6 +45,10 @@ jobs:
         with:
           package-name: flex
 
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: zlib
+
       - id: auth
         name: 'Authenticate to Google Cloud'
         uses: google-github-actions/auth@v0
