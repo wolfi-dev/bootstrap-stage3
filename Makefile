@@ -16,6 +16,7 @@ GMP_VERSION ?= 6.2.1-r2
 ISL_VERSION ?= 0.24-r1
 BINUTILS_VERSION ?= 2.39-r1
 GAWK_VERSION ?= 5.1.1-r1
+MPFR_VERSION ?= 4.1.0-r2
 
 MELANGE_OPTS ?= \
 	--repository-append ${REPO} \
@@ -38,7 +39,8 @@ PACKAGES = \
 	packages/${ARCH}/gmp-${GMP_VERSION}.apk \
 	packages/${ARCH}/isl-${ISL_VERSION}.apk \
 	packages/${ARCH}/binutils-${BINUTILS_VERSION}.apk \
-	packages/${ARCH}/gawk-${GAWK_VERSION}.apk
+	packages/${ARCH}/gawk-${GAWK_VERSION}.apk \
+	packages/${ARCH}/mpfr-${MPFR_VERSION}.apk
 
 all: ${KEY} ${PACKAGES}
 
@@ -99,6 +101,11 @@ packages/${ARCH}/binutils-${BINUTILS_VERSION}.apk:
 
 packages/${ARCH}/gawk-${GAWK_VERSION}.apk:
 	${MELANGE} build gawk.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
+	apk index -o packages/${ARCH}/APKINDEX.tar.gz packages/${ARCH}/*.apk --allow-untrusted
+	melange sign-index --signing-key ${KEY} packages/${ARCH}/APKINDEX.tar.gz
+
+packages/${ARCH}/mpfr-${MPFR_VERSION}.apk:
+	${MELANGE} build mpfr.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
 	apk index -o packages/${ARCH}/APKINDEX.tar.gz packages/${ARCH}/*.apk --allow-untrusted
 	melange sign-index --signing-key ${KEY} packages/${ARCH}/APKINDEX.tar.gz
 
