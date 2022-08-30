@@ -24,6 +24,7 @@ PKGCONF_VERSION ?= 1.9.3-r1
 WOLFI_BASELAYOUT_VERSION ?= 1-r2
 XZ_VERSION ?= 5.2.6-r1
 PAX_UTILS_VERSION ?= 1.3.4-r1
+PATCH_VERSION ?= 2.7.6-r1
 
 MELANGE_OPTS ?= \
 	--repository-append ${REPO} \
@@ -54,7 +55,8 @@ PACKAGES = \
 	packages/${ARCH}/pkgconf-${PKGCONF_VERSION}.apk \
 	packages/${ARCH}/wolfi-baselayout-${WOLFI_BASELAYOUT_VERSION}.apk \
 	packages/${ARCH}/xz-${XZ_VERSION}.apk \
-	packages/${ARCH}/pax-utils-${PAX_UTILS_VERSION}.apk
+	packages/${ARCH}/pax-utils-${PAX_UTILS_VERSION}.apk \
+	packages/${ARCH}/patch-${PATCH_VERSION}.apk
 
 all: ${KEY} ${PACKAGES}
 
@@ -155,6 +157,11 @@ packages/${ARCH}/xz-${XZ_VERSION}.apk:
 
 packages/${ARCH}/pax-utils-${PAX_UTILS_VERSION}.apk:
 	${MELANGE} build pax-utils.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
+	apk index -o packages/${ARCH}/APKINDEX.tar.gz packages/${ARCH}/*.apk --allow-untrusted
+	melange sign-index --signing-key ${KEY} packages/${ARCH}/APKINDEX.tar.gz
+
+packages/${ARCH}/patch-${PATCH_VERSION}.apk:
+	${MELANGE} build patch.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
 	apk index -o packages/${ARCH}/APKINDEX.tar.gz packages/${ARCH}/*.apk --allow-untrusted
 	melange sign-index --signing-key ${KEY} packages/${ARCH}/APKINDEX.tar.gz
 
