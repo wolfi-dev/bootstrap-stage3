@@ -103,6 +103,12 @@ jobs:
         with:
           package-name: pkgconf
 
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: wolfi-baselayout
+          empty-workspace: false
+          source-dir: ${{ github.workspace }}/wolfi-baselayout
+
       - id: auth
         name: 'Authenticate to Google Cloud'
         uses: google-github-actions/auth@v0
