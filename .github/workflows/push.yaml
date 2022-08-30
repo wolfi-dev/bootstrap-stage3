@@ -87,6 +87,10 @@ jobs:
         with:
           package-name: mpfr
 
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: mpc
+
       - id: auth
         name: 'Authenticate to Google Cloud'
         uses: google-github-actions/auth@v0

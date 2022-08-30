@@ -36,7 +36,6 @@ pipeline:
       ./configure \
         --host=$(uname -m)-pc-linux-gnu \
         --target=$(uname -m)-pc-linux-gnu \
-        --with-sysroot=/usr/$(uname -m)-pc-linux-gnu \
         --prefix=/usr \
         --enable-shared
   - uses: autoconf/make

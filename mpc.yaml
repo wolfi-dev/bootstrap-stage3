@@ -1,15 +1,15 @@
 package:
-  name: isl
-  version: 0.24
+  name: mpc
+  version: 1.2.1
   epoch: 1
-  description: "an integer set library for the polyhedral model"
+  description: "multiple-precision C library"
   target-architecture:
     - all
   copyright:
     - paths:
       - "*"
       attestation: TODO
-      license: MIT
+      license: LGPL-3.0-or-later
   dependencies:
     runtime:
 
@@ -25,18 +25,19 @@ environment:
       - build-base
       - ca-certificates-bundle
       - gmp
+      - mpfr
 
 pipeline:
   - uses: fetch
     with:
-      uri: https://libisl.sourceforge.io/isl-${{package.version}}.tar.gz
-      expected-sha256: 26e6e4d60ad59b3fff9948eb36743f0c874e124e410ef5bab930d0f546bc580d
+      uri: https://ftp.gnu.org/gnu/mpc/mpc-${{package.version}}.tar.gz
+      expected-sha256: 17503d2c395dfcf106b622dc142683c1199431d095367c6aacba6eec30340459
   - runs: |
-      ./configure \
-        --build=$(uname -m)-alpine-linux-musl \
+      EGREP=egrep ./configure \
         --host=$(uname -m)-pc-linux-gnu \
         --target=$(uname -m)-pc-linux-gnu \
         --prefix=/usr \
         --enable-shared
   - uses: autoconf/make
   - uses: autoconf/make-install
+  - uses: strip
