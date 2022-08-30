@@ -1,7 +1,7 @@
 package:
   name: gcc
   version: 12.2.0
-  epoch: 4
+  epoch: 5
   description: "the GNU compiler collection (cross compilation)"
   target-architecture:
     - all
@@ -71,6 +71,8 @@ pipeline:
       make -C build -j$(nproc)
   - runs: |
       make -C build -j$(nproc) install DESTDIR="${{targets.destdir}}"
+  - runs: |
+      chmod 755 ${{targets.destdir}}/usr/lib64/libgcc_s.*
   - runs: |
       ln -s gcc ${{targets.destdir}}/usr/bin/cc
   - name: 'Clean up documentation'
