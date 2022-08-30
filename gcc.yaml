@@ -67,7 +67,6 @@ pipeline:
         --disable-libquadmath \
         --disable-libssp \
         --disable-libvtv \
-        --disable-libstdcxx \
         --enable-languages=c,c++
   - runs: |
       make -C build -j$(nproc)
