@@ -75,6 +75,10 @@ jobs:
         with:
           package-name: isl
 
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: binutils
+
       - id: auth
         name: 'Authenticate to Google Cloud'
         uses: google-github-actions/auth@v0
