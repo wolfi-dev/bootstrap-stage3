@@ -10,6 +10,7 @@ FLEX_VERSION ?= 2.6.4-r0
 ZLIB_VERSION ?= 1.2.12-r1
 BZIP2_VERSION ?= 1.0.8-r0
 PERL_VERSION ?= 5.36.0-r0
+NCURSES_VERSION ?= 6.3-r1
 
 MELANGE_OPTS ?= \
 	--repository-append ${REPO} \
@@ -26,7 +27,8 @@ PACKAGES = \
 	packages/${ARCH}/flex-${FLEX_VERSION}.apk \
 	packages/${ARCH}/zlib-${ZLIB_VERSION}.apk \
 	packages/${ARCH}/bzip2-${BZIP2_VERSION}.apk \
-	packages/${ARCH}/perl-${PERL_VERSION}.apk
+	packages/${ARCH}/perl-${PERL_VERSION}.apk \
+	packages/${ARCH}/ncurses-${NCURSES_VERSION}.apk
 
 all: ${KEY} ${PACKAGES}
 
@@ -57,6 +59,11 @@ packages/${ARCH}/bzip2-${BZIP2_VERSION}.apk:
 
 packages/${ARCH}/perl-${PERL_VERSION}.apk:
 	${MELANGE} build perl.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
+	apk index -o packages/${ARCH}/APKINDEX.tar.gz packages/${ARCH}/*.apk --allow-untrusted
+	melange sign-index --signing-key ${KEY} packages/${ARCH}/APKINDEX.tar.gz
+
+packages/${ARCH}/ncurses-${NCURSES_VERSION}.apk:
+	${MELANGE} build ncurses.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
 	apk index -o packages/${ARCH}/APKINDEX.tar.gz packages/${ARCH}/*.apk --allow-untrusted
 	melange sign-index --signing-key ${KEY} packages/${ARCH}/APKINDEX.tar.gz
 
