@@ -40,6 +40,7 @@ CA_CERTIFICATES_VERSION ?= 20220614-r1
 GZIP_VERSION ?= 1.12-r1
 GREP_VERSION ?= 3.7-r1
 FILE_VERSION ?= 5.42-r1
+SED_VERSION ?= 4.8-r1
 
 MELANGE_OPTS ?= \
 	--repository-append ${REPO} \
@@ -86,7 +87,8 @@ PACKAGES = \
 	packages/${ARCH}/ca-certificates-${CA_CERTIFICATES_VERSION}.apk \
 	packages/${ARCH}/gzip-${GZIP_VERSION}.apk \
 	packages/${ARCH}/grep-${GREP_VERSION}.apk \
-	packages/${ARCH}/file-${FILE_VERSION}.apk
+	packages/${ARCH}/file-${FILE_VERSION}.apk \
+	packages/${ARCH}/sed-${SED_VERSION}.apk
 
 all: ${KEY} ${PACKAGES}
 
@@ -267,6 +269,11 @@ packages/${ARCH}/grep-${GREP_VERSION}.apk:
 
 packages/${ARCH}/file-${FILE_VERSION}.apk:
 	${MELANGE} build file.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
+	apk index -o packages/${ARCH}/APKINDEX.tar.gz packages/${ARCH}/*.apk --allow-untrusted
+	melange sign-index --signing-key ${KEY} packages/${ARCH}/APKINDEX.tar.gz
+
+packages/${ARCH}/sed-${SED_VERSION}.apk:
+	${MELANGE} build sed.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
 	apk index -o packages/${ARCH}/APKINDEX.tar.gz packages/${ARCH}/*.apk --allow-untrusted
 	melange sign-index --signing-key ${KEY} packages/${ARCH}/APKINDEX.tar.gz
 
