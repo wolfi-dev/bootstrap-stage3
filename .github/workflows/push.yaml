@@ -191,6 +191,10 @@ jobs:
         with:
           package-name: sed
 
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: wget
+
       - id: auth
         name: 'Authenticate to Google Cloud'
         uses: google-github-actions/auth@v0
