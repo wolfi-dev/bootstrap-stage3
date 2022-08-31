@@ -32,6 +32,7 @@ LIBFFI_VERSION ?= 3.4.2-r0
 MPDECIMAL_VERSION ?= 2.5.1-r0
 OPENSSL_VERSION ?= 3.0.5-r2
 READLINE_VERSION ?= 8.1.2-r0
+SQLITE_VERSION ?= 3.39.2-r0
 
 MELANGE_OPTS ?= \
 	--repository-append ${REPO} \
@@ -70,7 +71,8 @@ PACKAGES = \
 	packages/${ARCH}/libffi-${LIBFFI_VERSION}.apk \
 	packages/${ARCH}/mpdecimal-${MPDECIMAL_VERSION}.apk \
 	packages/${ARCH}/openssl-${OPENSSL_VERSION}.apk \
-	packages/${ARCH}/readline-${READLINE_VERSION}.apk
+	packages/${ARCH}/readline-${READLINE_VERSION}.apk \
+	packages/${ARCH}/sqlite-${SQLITE_VERSION}.apk
 
 all: ${KEY} ${PACKAGES}
 
@@ -211,6 +213,11 @@ packages/${ARCH}/openssl-${OPENSSL_VERSION}.apk:
 
 packages/${ARCH}/readline-${READLINE_VERSION}.apk:
 	${MELANGE} build readline.yaml ${MELANGE_OPTS} --source-dir ./readline/
+	apk index -o packages/${ARCH}/APKINDEX.tar.gz packages/${ARCH}/*.apk --allow-untrusted
+	melange sign-index --signing-key ${KEY} packages/${ARCH}/APKINDEX.tar.gz
+
+packages/${ARCH}/sqlite-${SQLITE_VERSION}.apk:
+	${MELANGE} build sqlite.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
 	apk index -o packages/${ARCH}/APKINDEX.tar.gz packages/${ARCH}/*.apk --allow-untrusted
 	melange sign-index --signing-key ${KEY} packages/${ARCH}/APKINDEX.tar.gz
 
