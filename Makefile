@@ -33,6 +33,7 @@ MPDECIMAL_VERSION ?= 2.5.1-r0
 OPENSSL_VERSION ?= 3.0.5-r2
 READLINE_VERSION ?= 8.1.2-r0
 SQLITE_VERSION ?= 3.39.2-r0
+PYTHON3_VERSION ?= 3.10.6-r0
 
 MELANGE_OPTS ?= \
 	--repository-append ${REPO} \
@@ -72,7 +73,8 @@ PACKAGES = \
 	packages/${ARCH}/mpdecimal-${MPDECIMAL_VERSION}.apk \
 	packages/${ARCH}/openssl-${OPENSSL_VERSION}.apk \
 	packages/${ARCH}/readline-${READLINE_VERSION}.apk \
-	packages/${ARCH}/sqlite-${SQLITE_VERSION}.apk
+	packages/${ARCH}/sqlite-${SQLITE_VERSION}.apk \
+	packages/${ARCH}/python3-${PYTHON3_VERSION}.apk
 
 all: ${KEY} ${PACKAGES}
 
@@ -218,6 +220,11 @@ packages/${ARCH}/readline-${READLINE_VERSION}.apk:
 
 packages/${ARCH}/sqlite-${SQLITE_VERSION}.apk:
 	${MELANGE} build sqlite.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
+	apk index -o packages/${ARCH}/APKINDEX.tar.gz packages/${ARCH}/*.apk --allow-untrusted
+	melange sign-index --signing-key ${KEY} packages/${ARCH}/APKINDEX.tar.gz
+
+packages/${ARCH}/python3-${PYTHON3_VERSION}.apk:
+	${MELANGE} build python3.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
 	apk index -o packages/${ARCH}/APKINDEX.tar.gz packages/${ARCH}/*.apk --allow-untrusted
 	melange sign-index --signing-key ${KEY} packages/${ARCH}/APKINDEX.tar.gz
 

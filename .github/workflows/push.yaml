@@ -155,6 +155,10 @@ jobs:
         with:
           package-name: sqlite
 
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: python3
+
       - id: auth
         name: 'Authenticate to Google Cloud'
         uses: google-github-actions/auth@v0

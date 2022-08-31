@@ -1,0 +1,72 @@
+package:
+  name: python3
+  version: 3.10.6
+  epoch: 0
+  description: "the Python programming language"
+  target-architecture:
+    - all
+  copyright:
+    - paths:
+      - "*"
+      attestation: TODO
+      license: PSF-2.0
+  dependencies:
+    runtime:
+
+environment:
+  contents:
+    repositories:
+      - https://packages.wolfi.dev/bootstrap/stage2
+    keyring:
+      - https://packages.wolfi.dev/bootstrap/stage2/melange.rsa.pub
+    packages:
+      - busybox
+      - ca-certificates-bundle
+      - build-base
+      - bzip2
+      - expat
+      - gdbm
+      - libffi
+      - linux-headers
+      - mpdecimal
+      - ncurses
+      - openssl
+      - readline
+      - sqlite
+      - xz
+      - zlib
+
+pipeline:
+  - uses: fetch
+    with:
+      uri: https://www.python.org/ftp/python/${{package.version}}/Python-${{package.version}}.tar.xz
+      expected-sha256: f795ff87d11d4b0c7c33bc8851b0c28648d8a4583aa2100a98c22b4326b6d3f3
+  - name: Force use of system libraries
+    runs: |
+      rm -rf Modules/expat \
+        Modules/_ctypes/darwin* \
+        Modules/_ctypes/libffi*
+  - name: Configure
+    runs: |
+      ./configure \
+         --host=$(uname -m)-pc-linux-gnu \
+         --build=$(uname -m)-pc-linux-gnu \
+         --target=$(uname -m)-pc-linux-gnu \
+         --prefix=/usr \
+         --enable-ipv6 \
+         --enable-loadable-sqlite-extensions \
+         --enable-optimizations \
+         --enable-shared \
+         --without-lto \
+         --with-computed-gotos \
+         --with-dbmliborder=gdbm:ndbm \
+         --with-system-expat \
+         --with-system-ffi \
+         --with-system-libmpdec \
+         --without-ensurepip
+  - uses: autoconf/make
+  - uses: autoconf/make-install
+  - name: Install python symlink
+    runs: |
+      ln -s python3 "${{targets.destdir}}"/usr/bin/python
+  - uses: strip
