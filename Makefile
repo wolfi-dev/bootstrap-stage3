@@ -26,6 +26,7 @@ XZ_VERSION ?= 5.2.6-r1
 PAX_UTILS_VERSION ?= 1.3.4-r1
 PATCH_VERSION ?= 2.7.6-r1
 LINUX_HEADERS_VERSION ?= 5.16.9-r1
+EXPAT_VERSION ?= 2.4.8-r0
 
 MELANGE_OPTS ?= \
 	--repository-append ${REPO} \
@@ -58,7 +59,8 @@ PACKAGES = \
 	packages/${ARCH}/xz-${XZ_VERSION}.apk \
 	packages/${ARCH}/pax-utils-${PAX_UTILS_VERSION}.apk \
 	packages/${ARCH}/patch-${PATCH_VERSION}.apk \
-	packages/${ARCH}/linux-headers-${LINUX_HEADERS_VERSION}.apk
+	packages/${ARCH}/linux-headers-${LINUX_HEADERS_VERSION}.apk \
+	packages/${ARCH}/expat-${EXPAT_VERSION}.apk
 
 all: ${KEY} ${PACKAGES}
 
@@ -169,6 +171,11 @@ packages/${ARCH}/patch-${PATCH_VERSION}.apk:
 
 packages/${ARCH}/linux-headers-${LINUX_HEADERS_VERSION}.apk:
 	${MELANGE} build linux-headers.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
+	apk index -o packages/${ARCH}/APKINDEX.tar.gz packages/${ARCH}/*.apk --allow-untrusted
+	melange sign-index --signing-key ${KEY} packages/${ARCH}/APKINDEX.tar.gz
+
+packages/${ARCH}/expat-${EXPAT_VERSION}.apk:
+	${MELANGE} build expat.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
 	apk index -o packages/${ARCH}/APKINDEX.tar.gz packages/${ARCH}/*.apk --allow-untrusted
 	melange sign-index --signing-key ${KEY} packages/${ARCH}/APKINDEX.tar.gz
 
