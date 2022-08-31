@@ -28,6 +28,7 @@ PATCH_VERSION ?= 2.7.6-r1
 LINUX_HEADERS_VERSION ?= 5.16.9-r1
 EXPAT_VERSION ?= 2.4.8-r0
 GDBM_VERSION ?= 1.23-r0
+LIBFFI_VERSION ?= 3.4.2-r0
 
 MELANGE_OPTS ?= \
 	--repository-append ${REPO} \
@@ -62,7 +63,8 @@ PACKAGES = \
 	packages/${ARCH}/patch-${PATCH_VERSION}.apk \
 	packages/${ARCH}/linux-headers-${LINUX_HEADERS_VERSION}.apk \
 	packages/${ARCH}/expat-${EXPAT_VERSION}.apk \
-	packages/${ARCH}/gdbm-${GDBM_VERSION}.apk
+	packages/${ARCH}/gdbm-${GDBM_VERSION}.apk \
+	packages/${ARCH}/libffi-${LIBFFI_VERSION}.apk
 
 all: ${KEY} ${PACKAGES}
 
@@ -183,6 +185,11 @@ packages/${ARCH}/expat-${EXPAT_VERSION}.apk:
 
 packages/${ARCH}/gdbm-${GDBM_VERSION}.apk:
 	${MELANGE} build gdbm.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
+	apk index -o packages/${ARCH}/APKINDEX.tar.gz packages/${ARCH}/*.apk --allow-untrusted
+	melange sign-index --signing-key ${KEY} packages/${ARCH}/APKINDEX.tar.gz
+
+packages/${ARCH}/libffi-${LIBFFI_VERSION}.apk:
+	${MELANGE} build libffi.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
 	apk index -o packages/${ARCH}/APKINDEX.tar.gz packages/${ARCH}/*.apk --allow-untrusted
 	melange sign-index --signing-key ${KEY} packages/${ARCH}/APKINDEX.tar.gz
 
