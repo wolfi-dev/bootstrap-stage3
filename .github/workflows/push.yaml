@@ -195,6 +195,10 @@ jobs:
         with:
           package-name: wget
 
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: build-base
+
       - id: auth
         name: 'Authenticate to Google Cloud'
         uses: google-github-actions/auth@v0
