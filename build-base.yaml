@@ -23,7 +23,7 @@ environment:
     repositories:
       - https://packages.wolfi.dev/bootstrap/stage2
     keyring:
-      - https://packages.wolfi.dev/bootstrap/stage2/melange.rsa.pub
+      - https://packages.wolfi.dev/bootstrap/stage2/wolfi-signing.rsa.pub
     packages:
       - wolfi-baselayout
       - busybox
