@@ -1,0 +1,29 @@
+package:
+  name: wolfi-keys
+  version: 1
+  epoch: 0
+  description: "Wolfi signing keyring"
+  target-architecture:
+    - all
+  copyright:
+    - paths:
+      - "*"
+      attestation: TODO
+      license: MIT
+  dependencies:
+    runtime:
+
+environment:
+  contents:
+    repositories:
+      - https://packages.wolfi.dev/bootstrap/stage2
+    keyring:
+      - https://packages.wolfi.dev/bootstrap/stage2/melange.rsa.pub
+    packages:
+      - busybox
+
+pipeline:
+  - name: Install
+    runs: |
+      mkdir -p "${{targets.destdir}}"/etc/apk/keys
+      install -m644 melange.rsa.pub "${{targets.destdir}}"/etc/apk/keys

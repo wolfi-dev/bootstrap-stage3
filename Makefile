@@ -45,6 +45,7 @@ WGET_VERSION ?= 1.21.3-r1
 BUILD_BASE_VERSION ?= 1-r2
 SCDOC_VERSION ?= 1.11.2-r0
 APK_TOOLS_VERSION ?= 2.12.9-r1
+WOLFI_KEYS_VERSION ?= 1-r0
 
 MELANGE_OPTS ?= \
 	--repository-append ${REPO} \
@@ -96,7 +97,8 @@ PACKAGES = \
 	packages/${ARCH}/wget-${WGET_VERSION}.apk \
 	packages/${ARCH}/build-base-${BUILD_BASE_VERSION}.apk \
 	packages/${ARCH}/scdoc-${SCDOC_VERSION}.apk \
-	packages/${ARCH}/apk-tools-${APK_TOOLS_VERSION}.apk
+	packages/${ARCH}/apk-tools-${APK_TOOLS_VERSION}.apk \
+	packages/${ARCH}/wolfi-keys-${WOLFI_KEYS_VERSION}.apk
 
 all: ${KEY} ${PACKAGES}
 
@@ -302,6 +304,11 @@ packages/${ARCH}/scdoc-${SCDOC_VERSION}.apk:
 
 packages/${ARCH}/apk-tools-${APK_TOOLS_VERSION}.apk:
 	${MELANGE} build apk-tools.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
+	apk index -o packages/${ARCH}/APKINDEX.tar.gz packages/${ARCH}/*.apk --allow-untrusted
+	melange sign-index --signing-key ${KEY} packages/${ARCH}/APKINDEX.tar.gz
+
+packages/${ARCH}/wolfi-keys-${WOLFI_KEYS_VERSION}.apk:
+	${MELANGE} build wolfi-keys.yaml ${MELANGE_OPTS} --source-dir ./wolfi-keys/
 	apk index -o packages/${ARCH}/APKINDEX.tar.gz packages/${ARCH}/*.apk --allow-untrusted
 	melange sign-index --signing-key ${KEY} packages/${ARCH}/APKINDEX.tar.gz
 
