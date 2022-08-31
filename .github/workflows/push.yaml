@@ -183,6 +183,10 @@ jobs:
         with:
           package-name: grep
 
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: file
+
       - id: auth
         name: 'Authenticate to Google Cloud'
         uses: google-github-actions/auth@v0
