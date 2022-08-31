@@ -1,0 +1,81 @@
+package:
+  name: glibc
+  version: 2.35
+  epoch: 2
+  description: "the GNU C library"
+  target-architecture:
+    - all
+  copyright:
+    - paths:
+      - "*"
+      attestation: TODO
+      license: GPL-3.0-or-later
+  dependencies:
+    runtime:
+      - wolfi-baselayout
+      - linux-headers
+  scriptlets:
+    trigger:
+      paths:
+        - /lib
+        - /lib64
+        - /usr/lib
+        - /usr/lib64
+      script: |
+        #!/bin/busybox sh
+        /sbin/ldconfig
+
+environment:
+  contents:
+    repositories:
+      - https://packages.wolfi.dev/bootstrap/stage2
+    keyring:
+      - https://packages.wolfi.dev/bootstrap/stage2/melange.rsa.pub
+    packages:
+      - wolfi-baselayout
+      - busybox
+      - build-base
+      - ca-certificates-bundle
+      - texinfo
+      - gmp
+      - mpfr
+      - mpc
+      - zlib
+      - gawk
+      - bison
+      - flex
+      - grep
+      - python3
+
+pipeline:
+  - uses: fetch
+    with:
+      uri: http://ftp.gnu.org/gnu/libc/glibc-${{package.version}}.tar.gz
+      expected-sha256: 3e8e0c6195da8dfbd31d77c56fb8d99576fb855fafd47a9e0a895e51fd5942d4
+  - name: 'Set up build directory'
+    runs: |
+      mkdir build
+  - name: 'Configure glibc'
+    runs: |
+      cd build
+      ../configure \
+        --prefix=/ \
+        --libdir=/lib \
+        --includedir=/usr/include \
+        --host=$(uname -m)-pc-linux-gnu \
+        --build=$(../config.guess) \
+        --disable-nls \
+        --disable-werror \
+        --enable-kernel=4.9 \
+        --disable-nls
+  - runs: |
+      make -C build -j$(nproc)
+  - runs: |
+      make -C build -j$(nproc) install DESTDIR="${{targets.destdir}}"
+  - name: "Set up ldconfig"
+    runs: |
+      cp vendor/ld.so.conf "${{targets.destdir}}"/etc/ld.so.conf
+  - name: 'Clean up documentation'
+    runs: |
+      rm -rf ${{targets.destdir}}/usr/share/info
+  - uses: strip

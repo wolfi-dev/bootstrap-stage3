@@ -159,6 +159,12 @@ jobs:
         with:
           package-name: python3
 
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: glibc
+          empty-workspace: false
+          source-dir: ${{ github.workspace }}/glibc
+
       - id: auth
         name: 'Authenticate to Google Cloud'
         uses: google-github-actions/auth@v0
