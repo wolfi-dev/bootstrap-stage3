@@ -171,6 +171,10 @@ jobs:
           empty-workspace: false
           source-dir: ${{ github.workspace }}/busybox
 
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: ca-certificates
+
       - id: auth
         name: 'Authenticate to Google Cloud'
         uses: google-github-actions/auth@v0
