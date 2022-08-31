@@ -1,0 +1,47 @@
+package:
+  name: apk-tools
+  version: 2.12.9
+  epoch: 1
+  description: "apk-tools (Wolfi package manager)"
+  target-architecture:
+    - all
+  copyright:
+    - paths:
+      - "*"
+      attestation: TODO
+      license: GPL-2.0-only
+  dependencies:
+    runtime:
+      - ca-certificates-bundle
+
+environment:
+  contents:
+    repositories:
+      - https://packages.wolfi.dev/bootstrap/stage2
+    keyring:
+      - https://packages.wolfi.dev/bootstrap/stage2/melange.rsa.pub
+    packages:
+      - busybox
+      - ca-certificates-bundle
+      - build-base
+      - scdoc
+      - zlib
+      - openssl
+
+pipeline:
+  - uses: fetch
+    with:
+      uri: https://gitlab.alpinelinux.org/alpine/apk-tools/-/archive/v${{package.version}}/apk-tools-v${{package.version}}.tar.gz
+      expected-sha256: 7d9f68683c282a8e30a119e7951ffee293ec2caa8d55fd1280841eda09825ddd
+  - runs: |
+      sed -i -e 's:-Werror::' Make.rules
+      echo "FULL_VERSION=${{package.version}}-r${{package.epoch}}" > config.mk
+  - runs: |
+      make LUA="no" V=1
+  - runs: |
+      make LUA="no" V=1 DESTDIR="${{targets.destdir}}" install
+
+      install -d "${{targets.destdir}}"/var/lib/apk
+      install -d "${{targets.destdir}}"/var/cache/misc
+      install -d "${{targets.destdir}}"/etc/apk/keys
+      install -d "${{targets.destdir}}"/etc/apk/protected_paths.d
