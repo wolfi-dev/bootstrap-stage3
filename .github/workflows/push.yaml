@@ -165,6 +165,12 @@ jobs:
           empty-workspace: false
           source-dir: ${{ github.workspace }}/glibc
 
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: busybox
+          empty-workspace: false
+          source-dir: ${{ github.workspace }}/busybox
+
       - id: auth
         name: 'Authenticate to Google Cloud'
         uses: google-github-actions/auth@v0
