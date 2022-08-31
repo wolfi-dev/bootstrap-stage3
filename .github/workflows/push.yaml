@@ -141,6 +141,10 @@ jobs:
         with:
           package-name: mpdecimal
 
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: openssl
+
       - id: auth
         name: 'Authenticate to Google Cloud'
         uses: google-github-actions/auth@v0

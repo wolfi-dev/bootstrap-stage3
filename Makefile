@@ -30,6 +30,7 @@ EXPAT_VERSION ?= 2.4.8-r0
 GDBM_VERSION ?= 1.23-r0
 LIBFFI_VERSION ?= 3.4.2-r0
 MPDECIMAL_VERSION ?= 2.5.1-r0
+OPENSSL_VERSION ?= 3.0.5-r2
 
 MELANGE_OPTS ?= \
 	--repository-append ${REPO} \
@@ -66,7 +67,8 @@ PACKAGES = \
 	packages/${ARCH}/expat-${EXPAT_VERSION}.apk \
 	packages/${ARCH}/gdbm-${GDBM_VERSION}.apk \
 	packages/${ARCH}/libffi-${LIBFFI_VERSION}.apk \
-	packages/${ARCH}/mpdecimal-${MPDECIMAL_VERSION}.apk
+	packages/${ARCH}/mpdecimal-${MPDECIMAL_VERSION}.apk \
+	packages/${ARCH}/openssl-${OPENSSL_VERSION}.apk
 
 all: ${KEY} ${PACKAGES}
 
@@ -197,6 +199,11 @@ packages/${ARCH}/libffi-${LIBFFI_VERSION}.apk:
 
 packages/${ARCH}/mpdecimal-${MPDECIMAL_VERSION}.apk:
 	${MELANGE} build mpdecimal.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
+	apk index -o packages/${ARCH}/APKINDEX.tar.gz packages/${ARCH}/*.apk --allow-untrusted
+	melange sign-index --signing-key ${KEY} packages/${ARCH}/APKINDEX.tar.gz
+
+packages/${ARCH}/openssl-${OPENSSL_VERSION}.apk:
+	${MELANGE} build openssl.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
 	apk index -o packages/${ARCH}/APKINDEX.tar.gz packages/${ARCH}/*.apk --allow-untrusted
 	melange sign-index --signing-key ${KEY} packages/${ARCH}/APKINDEX.tar.gz
 
