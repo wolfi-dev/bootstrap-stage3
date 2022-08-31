@@ -213,6 +213,10 @@ jobs:
           empty-workspace: false
           source-dir: ${{ github.workspace }}/wolfi-keys
 
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: wolfi-base
+
       - id: auth
         name: 'Authenticate to Google Cloud'
         uses: google-github-actions/auth@v0
