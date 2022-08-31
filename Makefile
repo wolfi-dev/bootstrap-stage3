@@ -37,6 +37,7 @@ PYTHON3_VERSION ?= 3.10.6-r0
 GLIBC_VERSION ?= 2.35-r2
 BUSYBOX_VERSION ?= 1.35.0-r2
 CA_CERTIFICATES_VERSION ?= 20220614-r1
+GZIP_VERSION ?= 1.12-r1
 
 MELANGE_OPTS ?= \
 	--repository-append ${REPO} \
@@ -80,7 +81,8 @@ PACKAGES = \
 	packages/${ARCH}/python3-${PYTHON3_VERSION}.apk \
 	packages/${ARCH}/glibc-${GLIBC_VERSION}.apk \
 	packages/${ARCH}/busybox-${BUSYBOX_VERSION}.apk \
-	packages/${ARCH}/ca-certificates-${CA_CERTIFICATES_VERSION}.apk
+	packages/${ARCH}/ca-certificates-${CA_CERTIFICATES_VERSION}.apk \
+	packages/${ARCH}/gzip-${GZIP_VERSION}.apk
 
 all: ${KEY} ${PACKAGES}
 
@@ -246,6 +248,11 @@ packages/${ARCH}/busybox-${BUSYBOX_VERSION}.apk:
 
 packages/${ARCH}/ca-certificates-${CA_CERTIFICATES_VERSION}.apk:
 	${MELANGE} build ca-certificates.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
+	apk index -o packages/${ARCH}/APKINDEX.tar.gz packages/${ARCH}/*.apk --allow-untrusted
+	melange sign-index --signing-key ${KEY} packages/${ARCH}/APKINDEX.tar.gz
+
+packages/${ARCH}/gzip-${GZIP_VERSION}.apk:
+	${MELANGE} build gzip.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
 	apk index -o packages/${ARCH}/APKINDEX.tar.gz packages/${ARCH}/*.apk --allow-untrusted
 	melange sign-index --signing-key ${KEY} packages/${ARCH}/APKINDEX.tar.gz
 

@@ -175,6 +175,10 @@ jobs:
         with:
           package-name: ca-certificates
 
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: gzip
+
       - id: auth
         name: 'Authenticate to Google Cloud'
         uses: google-github-actions/auth@v0
