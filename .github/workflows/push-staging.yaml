@@ -1,0 +1,236 @@
+name: Build Packages Staging
+
+on:
+  workflow_dispatch:
+
+
+jobs:
+  build:
+    name: Build stage3 packages
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      packages: write
+      contents: read
+
+    steps:
+      - name: Generate snapshot date
+        id: snapshot-date
+        run: |
+          echo ::set-output name=date::$(date -u +%Y%m%d)
+          echo ::set-output name=epoch::$(date -u +%s)
+        shell: bash
+
+      - uses: actions/checkout@v3
+      - run: echo "${{ secrets.MELANGE_RSA }}" > ./wolfi-signing.rsa
+      - run: |
+          sudo mkdir -p /etc/apk/keys
+          sudo cp ./wolfi-signing.rsa.pub /etc/apk/keys/wolfi-signing.rsa.pub
+
+      - uses: chainguard-dev/actions/setup-melange@main
+
+      - id: auth
+        name: 'Authenticate to Google Cloud'
+        uses: google-github-actions/auth@v0
+        with:
+          workload_identity_provider: "projects/567187841907/locations/global/workloadIdentityPools/staging-shared-9bd2/providers/staging-shared-gha"
+          service_account: "staging-images-ci@staging-images-183e.iam.gserviceaccount.com"
+
+      - uses: google-github-actions/setup-gcloud@v0
+        with:
+          project_id: staging-images-183e
+
+      - name: 'Check that GCloud is properly configured'
+        run: |
+          gcloud info
+          gcloud --quiet alpha storage ls
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: m4
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: bison
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: flex
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: zlib
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: bzip2
+          empty-workspace: false
+          source-dir: ${{ github.workspace }}/bzip2
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: perl
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: ncurses
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: texinfo
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: gmp
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: isl
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: binutils
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: gawk
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: mpfr
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: mpc
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: gcc
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: make
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: pkgconf
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: wolfi-baselayout
+          empty-workspace: false
+          source-dir: ${{ github.workspace }}/wolfi-baselayout
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: xz
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: pax-utils
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: patch
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: linux-headers
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: expat
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: gdbm
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: libffi
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: mpdecimal
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: openssl
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: readline
+          empty-workspace: false
+          source-dir: ${{ github.workspace }}/readline
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: sqlite
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: python3
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: glibc
+          empty-workspace: false
+          source-dir: ${{ github.workspace }}/glibc
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: busybox
+          empty-workspace: false
+          source-dir: ${{ github.workspace }}/busybox
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: ca-certificates
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: gzip
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: grep
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: file
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: sed
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: wget
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: build-base
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: scdoc
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: apk-tools
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: wolfi-keys
+          empty-workspace: false
+          source-dir: ${{ github.workspace }}/wolfi-keys
+
+      - uses: chainguard-dev/actions/inky-build-pkg@main
+        with:
+          package-name: wolfi-base
+
+      - name: 'Upload the repository to a bucket'
+        run: |
+          cp /etc/apk/keys/wolfi-signing.rsa.pub ${{ github.workspace }}/packages/wolfi-signing.rsa.pub
+          gcloud --quiet alpha storage cp --recursive ${{ github.workspace }}/packages/ gs://wolfi-registry-source/bootstrap/stage3/
