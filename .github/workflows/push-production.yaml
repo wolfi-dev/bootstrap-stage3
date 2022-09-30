@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     name: Build stage3 packages
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16-core
 
     permissions:
       id-token: write
