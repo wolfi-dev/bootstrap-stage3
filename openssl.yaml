@@ -32,9 +32,9 @@ pipeline:
       expected-sha256: aa7d8d9bef71ad6525c55ba11e5f4397889ce49c2c9349dcea6d3e4f0b024a7a
   - name: Configure and build
     runs: |
-      export CC=$(uname -m)-pc-linux-gnu-gcc
-      export CXX=$(uname -m)-pc-linux-gnu-g++
-      export CPP=$(uname -m)-pc-linux-gnu-cpp
+      export CC=${{host.triplet.gnu}}-gcc
+      export CXX=${{host.triplet.gnu}}-g++
+      export CPP=${{host.triplet.gnu}}-cpp
 
       perl ./Configure \
          linux-x86_64 \

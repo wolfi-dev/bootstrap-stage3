@@ -48,9 +48,9 @@ pipeline:
     runs: |
       cd build
       ../configure \
-        --build=$(uname -m)-pc-linux-gnu \
-        --host=$(uname -m)-pc-linux-gnu \
-        --target=$(uname -m)-pc-linux-gnu \
+        --build=${{host.triplet.gnu}} \
+        --host=${{host.triplet.gnu}} \
+        --target=${{host.triplet.gnu}} \
         --prefix=/usr \
         --disable-nls \
         --disable-werror \

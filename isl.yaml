@@ -34,8 +34,8 @@ pipeline:
   - runs: |
       ./configure \
         --build=$(uname -m)-alpine-linux-musl \
-        --host=$(uname -m)-pc-linux-gnu \
-        --target=$(uname -m)-pc-linux-gnu \
+        --host=${{host.triplet.gnu}} \
+        --target=${{host.triplet.gnu}} \
         --prefix=/usr \
         --enable-shared
   - uses: autoconf/make

@@ -62,7 +62,7 @@ pipeline:
         --prefix=/ \
         --libdir=/lib \
         --includedir=/usr/include \
-        --host=$(uname -m)-pc-linux-gnu \
+        --host=${{host.triplet.gnu}} \
         --build=$(../config.guess) \
         --disable-nls \
         --disable-werror \
