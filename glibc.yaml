@@ -1,13 +1,13 @@
 package:
   name: glibc
-  version: 2.35
-  epoch: 2
+  version: 2.36
+  epoch: 0
   description: "the GNU C library"
   target-architecture:
     - all
   copyright:
     - paths:
-      - "*"
+        - "*"
       attestation: TODO
       license: GPL-3.0-or-later
   dependencies:
@@ -24,7 +24,6 @@ package:
       script: |
         #!/bin/busybox sh
         /sbin/ldconfig
-
 environment:
   contents:
     repositories:
@@ -46,12 +45,14 @@ environment:
       - flex
       - grep
       - python3
-
 pipeline:
   - uses: fetch
     with:
       uri: http://ftp.gnu.org/gnu/libc/glibc-${{package.version}}.tar.gz
-      expected-sha256: 3e8e0c6195da8dfbd31d77c56fb8d99576fb855fafd47a9e0a895e51fd5942d4
+      expected-sha256: 02efa6ffbbaf3e10e88f16818a862608d04b0ef838c66f6025ae120530792c9c
+  - name: 'Fix compatibility with GNU make 4.4'
+    runs: |
+      sed '/MAKEFLAGS :=/s/)r/) -r/' -i Makerules
   - name: 'Set up build directory'
     runs: |
       mkdir build
