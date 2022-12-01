@@ -1,18 +1,17 @@
 package:
   name: expat
-  version: 2.4.9
+  version: 2.5.0
   epoch: 0
   description: "XML SAX Parser library written in C"
   target-architecture:
     - all
   copyright:
     - paths:
-      - "*"
+        - "*"
       attestation: TODO
       license: MIT
   dependencies:
     runtime:
-
 environment:
   contents:
     repositories:
@@ -23,12 +22,11 @@ environment:
       - busybox
       - ca-certificates-bundle
       - build-base
-
 pipeline:
   - uses: fetch
     with:
       uri: https://downloads.sourceforge.net/project/expat/expat/${{package.version}}/expat-${{package.version}}.tar.bz2
-      expected-sha256: 7f44d1469b110773a94b0d5abeeeffaef79f8bd6406b07e52394bcf48126437a
+      expected-sha256: 6f0e6e01f7b30025fa05c85fdad1e5d0ec7fd35d9f61b22f34998de11969ff67
   - name: Configure
     runs: |
       ./configure \
