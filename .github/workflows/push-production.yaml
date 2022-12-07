@@ -67,8 +67,6 @@ jobs:
       - uses: chainguard-dev/actions/inky-build-pkg@main
         with:
           package-name: bzip2
-          empty-workspace: false
-          source-dir: ${{ github.workspace }}/bzip2
 
       - uses: chainguard-dev/actions/inky-build-pkg@main
         with:
