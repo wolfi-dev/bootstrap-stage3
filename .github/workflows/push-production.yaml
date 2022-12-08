@@ -1,9 +1,6 @@
 name: Build Packages Production
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
