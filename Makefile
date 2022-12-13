@@ -3,6 +3,7 @@ MELANGE_DIR ?= ../melange
 MELANGE ?= ${MELANGE_DIR}/melange
 KEY ?= local-melange.rsa
 REPO ?= $(shell pwd)/packages
+CACHE_DIR ?= gs://wolfi-sources/
 
 M4_VERSION ?= 1.4.19-r1
 BISON_VERSION ?= 3.8.2-r1
@@ -53,7 +54,8 @@ MELANGE_OPTS ?= \
 	--keyring-append ${KEY}.pub \
 	--signing-key ${KEY} \
 	--pipeline-dir ${MELANGE_DIR}/pipelines \
-	--arch ${ARCH}
+	--arch ${ARCH} \
+	--cache-dir ${CACHE_DIR}
 
 MELANGE_DEFOPTS ?= --empty-workspace
 
