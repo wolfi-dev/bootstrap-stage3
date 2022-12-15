@@ -63,7 +63,7 @@ jobs:
             --machine-type    t2a-standard-32 \
             --num-nodes       1
 
-      - uses: imjasonh/gke-auth@v0.1.0
+      - uses: imjasonh/gke-auth@v0.2.0
         with:
           project: "${PROJECT}"
           location: "${CLUSTER_ZONE}"
