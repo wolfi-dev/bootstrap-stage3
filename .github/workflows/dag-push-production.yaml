@@ -69,7 +69,8 @@ jobs:
           location: "${CLUSTER_ZONE}"
           cluster: "${CLUSTER_NAME}"
 
-      - run: ./scripts/setup-cluster.sh ${SERVICE_ACCOUNT}
+      - working-directory: ${{github.workspace}}/dag
+        run: ./scripts/setup-cluster.sh ${SERVICE_ACCOUNT}
 
   build-amd64:
     name: Build (amd64)
