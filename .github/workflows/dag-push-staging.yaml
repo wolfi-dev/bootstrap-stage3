@@ -8,11 +8,12 @@ on:
 
 env:
   PROJECT: staging-images-183e
-  CLUSTER_NAME: tmp-cluster-staging-stage3
+  CLUSTER_NAME: tmp-cluster-staging-stage3-${{github.run_id}}
   CLUSTER_ZONE: us-central1-b
   SERVICE_ACCOUNT: staging-images-ci
   FQ_SERVICE_ACCOUNT: staging-images-ci@staging-images-183e.iam.gserviceaccount.com
   BUCKET: wolfi-registry-source/bootstrap/stage3/
+  SRC_BUCKET: gs://wolfi-registry-destination/bootstrap/stage3/
 
 jobs:
   setup-cluster:
@@ -53,7 +54,7 @@ jobs:
             --release-channel rapid \
             --workload-pool   "${PROJECT}.svc.id.goog" \
             --machine-type    e2-standard-32 \
-            --num-nodes       1
+            --num-nodes       2
 
           gcloud container node-pools create arm-nodes \
             --cluster         "${CLUSTER_NAME}" \
@@ -117,7 +118,57 @@ jobs:
           dag pod \
             --cpu=30 --ram=100Gi \
             --bucket=${BUCKET} \
+            --src-bucket=${SRC_BUCKET} \
             --secret-key
+
+  build-armv7:
+    name: Build (armv7)
+    runs-on: ubuntu-latest
+    needs: setup-cluster
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      # Checkout and build dag from main
+      # Can't `go install` because its go.mod has `replace`s.
+      - uses: actions/setup-go@v3
+        with:
+          go-version: '>=1.19.0'
+      - uses: actions/checkout@v3
+        with:
+          repository: wolfi-dev/dag
+          path: ${{github.workspace}}/dag
+      - working-directory: ${{github.workspace}}/dag
+        run: go install
+
+      - uses: google-github-actions/auth@v0
+        with:
+          workload_identity_provider: "projects/567187841907/locations/global/workloadIdentityPools/staging-shared-9bd2/providers/staging-shared-gha"
+          service_account: ${{env.FQ_SERVICE_ACCOUNT}}
+      - uses: google-github-actions/setup-gcloud@v0
+        with:
+          project_id: ${{env.PROJECT}}
+      - uses: 'google-github-actions/get-gke-credentials@v0'
+        with:
+          cluster_name: ${{ env.CLUSTER_NAME }}
+          location: ${{ env.CLUSTER_ZONE }}
+      - run: gcloud auth configure-docker --quiet
+
+      - uses: actions/checkout@v3
+        with:
+          repository: wolfi-dev/bootstrap-stage3
+          path: ${{github.workspace}}/bootstrap-stage3
+
+      - working-directory: ${{github.workspace}}/bootstrap-stage3
+        run: |
+          dag pod \
+            --cpu=30 --ram=100Gi \
+            --bucket=${BUCKET} \
+            --src-bucket=${SRC_BUCKET} \
+            --secret-key \
+            --arch=armv7
 
   build-arm64:
     name: Build (arm64)
@@ -164,13 +215,14 @@ jobs:
           dag pod \
             --cpu=30 --ram=100Gi \
             --bucket=${BUCKET} \
+            --src-bucket=${SRC_BUCKET} \
             --secret-key \
             --arch=arm64
 
   teardown-cluster:
     name: Teardown build cluster
     runs-on: ubuntu-latest
-    needs: [build-amd64, build-arm64]
+    needs: [build-amd64, build-arm64, build-armv7]
     if: always()
 
     permissions:
