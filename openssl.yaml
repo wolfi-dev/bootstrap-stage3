@@ -36,8 +36,13 @@ pipeline:
       export CXX=${{host.triplet.gnu}}-g++
       export CPP=${{host.triplet.gnu}}-cpp
 
+      case "$(uname -m)" in
+      arm*) target="armv4"; _threads="no-threads" ;;
+      *) target="$(uname -m)" ;;
+      esac
+
       perl ./Configure \
-         linux-$(uname -m) \
+         linux-$target \
          --prefix=/usr \
          --libdir=lib \
          --openssldir=/etc/ssl \
@@ -55,6 +60,7 @@ pipeline:
          no-ssl3 \
          no-seed \
          no-weak-ssl-ciphers \
+         $_threads \
          -Wa,--noexecstack
       make -j$(nproc)
   - uses: autoconf/make-install
