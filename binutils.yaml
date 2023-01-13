@@ -35,7 +35,7 @@ pipeline:
       expected-sha256: d12ea6f239f1ffe3533ea11ad6e224ffcb89eb5d01bbea589e9158780fa11f10
   - name: 'Configure binutils'
     runs: |
-      ./configure \
+      AR=ar ./configure \
         --prefix=/usr \
         --host=${{host.triplet.gnu}} \
         --target=${{host.triplet.gnu}} \
@@ -45,7 +45,7 @@ pipeline:
         --disable-gprofng \
         --with-system-zlib
   - runs: |
-      make -j$(nproc) V=1
+      make -j$(nproc) V=1 AR=ar
   - uses: autoconf/make-install
   - name: 'Clean up documentation'
     runs: |
