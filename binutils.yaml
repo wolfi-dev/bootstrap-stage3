@@ -36,7 +36,6 @@ pipeline:
     runs: |
       ./configure \
         --prefix=/usr \
-        --build=$(./config.guess) \
         --host=${{host.triplet.gnu}} \
         --target=${{host.triplet.gnu}} \
         --disable-nls \
