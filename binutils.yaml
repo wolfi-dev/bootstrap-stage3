@@ -42,7 +42,8 @@ pipeline:
         --disable-nls \
         --disable-werror \
         --disable-multilib \
-        --disable-gprofng
+        --disable-gprofng \
+        --with-system-zlib
   - runs: |
       make -j$(nproc) V=1
   - uses: autoconf/make-install
