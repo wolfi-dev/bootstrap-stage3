@@ -1,7 +1,7 @@
 package:
   name: ncurses
-  version: 6.3
-  epoch: 1
+  version: 6.4
+  epoch: 0
   description: "console display library"
   target-architecture:
     - all
@@ -28,14 +28,13 @@ environment:
 pipeline:
   - uses: fetch
     with:
-#      uri: https://invisible-mirror.net/archives/ncurses/current/ncurses-${{package.version}}-20220820.tgz
-      uri: https://distfiles.alpinelinux.org/distfiles/edge/ncurses-${{package.version}}-20220820.tgz
-      expected-sha256: 7b810b01f71609fd31107a0b7794d0940d3ecc10c98ba19e83749419ba0934b9
+      uri: https://distfiles.alpinelinux.org/distfiles/edge/ncurses-${{package.version}}-20230715.tgz
+      expected-sha256: 7a8dc72f7021815ac7d594e9bd74fc13b20ec4d84295e60c04163197e28aada7
   - name: Configure
     runs: |
         ./configure \
           --prefix=/usr \
-          --host=${{host.triplet.gnu}} \
+          --host=${{cross.triplet.gnu.glibc}} \
           --mandir=/usr/share/man \
           --without-ada \
           --without-tests \
