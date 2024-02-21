@@ -35,6 +35,7 @@ OPENSSL_VERSION ?= 3.0.7-r0
 READLINE_VERSION ?= 8.1.2-r0
 SQLITE_VERSION ?= 3.39.2-r0
 PYTHON3_VERSION ?= 3.10.6-r0
+LIBXCRYPT_VERSION ?= 4.4.36-r0
 GLIBC_VERSION ?= 2.36-r0
 BUSYBOX_VERSION ?= 1.35.0-r2
 CA_CERTIFICATES_VERSION ?= 20220614-r1
@@ -90,6 +91,7 @@ PACKAGES = \
 	packages/${ARCH}/readline-${READLINE_VERSION}.apk \
 	packages/${ARCH}/sqlite-${SQLITE_VERSION}.apk \
 	packages/${ARCH}/python3-${PYTHON3_VERSION}.apk \
+	packages/${ARCH}/libxcrypt-${LIBXCRYPT_VERSION}.apk \
 	packages/${ARCH}/glibc-${GLIBC_VERSION}.apk \
 	packages/${ARCH}/busybox-${BUSYBOX_VERSION}.apk \
 	packages/${ARCH}/ca-certificates-${CA_CERTIFICATES_VERSION}.apk \
@@ -195,6 +197,9 @@ packages/${ARCH}/sqlite-${SQLITE_VERSION}.apk:
 
 packages/${ARCH}/python3-${PYTHON3_VERSION}.apk:
 	${MELANGE} build python3.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
+
+packages/${ARCH}/libxcrypt-${LIBXCRYPT_VERSION}.apk:
+    ${MELANGE} build libxcrypt.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
 
 packages/${ARCH}/glibc-${GLIBC_VERSION}.apk:
 	${MELANGE} build glibc.yaml ${MELANGE_OPTS} --source-dir ./glibc/
