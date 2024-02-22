@@ -199,7 +199,7 @@ packages/${ARCH}/python3-${PYTHON3_VERSION}.apk:
 	${MELANGE} build python3.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
 
 packages/${ARCH}/libxcrypt-${LIBXCRYPT_VERSION}.apk:
-    ${MELANGE} build libxcrypt.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
+	${MELANGE} build libxcrypt.yaml ${MELANGE_OPTS} ${MELANGE_DEFOPTS}
 
 packages/${ARCH}/glibc-${GLIBC_VERSION}.apk:
 	${MELANGE} build glibc.yaml ${MELANGE_OPTS} --source-dir ./glibc/
