@@ -37,6 +37,8 @@ jobs:
         with:
           repository: wolfi-dev/dag
           path: ${{github.workspace}}/dag
+          fetch-depth: 0
+
       - name: Setup Build Cluster
         working-directory: ${{github.workspace}}/dag
         run: |
@@ -71,7 +73,9 @@ jobs:
           cluster: "${CLUSTER_NAME}"
 
       - working-directory: ${{github.workspace}}/dag
-        run: ./scripts/setup-cluster.sh ${SERVICE_ACCOUNT}
+        run: |
+           git checkout c8bb454c91090f3aa3916a65dc55488864af7169
+           ./scripts/setup-cluster.sh ${SERVICE_ACCOUNT}
 
   build-amd64:
     name: Build (amd64)
@@ -92,8 +96,11 @@ jobs:
         with:
           repository: wolfi-dev/dag
           path: ${{github.workspace}}/dag
+          fetch-depth: 0
       - working-directory: ${{github.workspace}}/dag
-        run: go install
+        run: |
+           git checkout c8bb454c91090f3aa3916a65dc55488864af7169
+           go install
 
       - uses: google-github-actions/auth@v0
         with:
@@ -140,8 +147,11 @@ jobs:
         with:
           repository: wolfi-dev/dag
           path: ${{github.workspace}}/dag
+          fetch-depth: 0
       - working-directory: ${{github.workspace}}/dag
-        run: go install
+        run: |
+           git checkout c8bb454c91090f3aa3916a65dc55488864af7169 
+           go install
 
       - uses: google-github-actions/auth@v0
         with:
@@ -189,8 +199,11 @@ jobs:
         with:
           repository: wolfi-dev/dag
           path: ${{github.workspace}}/dag
+          fetch-depth: 0
       - working-directory: ${{github.workspace}}/dag
-        run: go install
+        run: |
+          git checkout c8bb454c91090f3aa3916a65dc55488864af7169
+          go install
 
       - uses: google-github-actions/auth@v0
         with:
